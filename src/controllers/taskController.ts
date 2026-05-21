@@ -59,3 +59,32 @@ export const getTaskById = async (
         res.status(500).json({ error: "Failed to fetch task" });
     }
 }
+
+export const updateTask = async (
+    req: Request, 
+    res: Response
+) => {
+    try {
+        const { id } = req.params;
+        const { title, description } = req.body;
+
+        if (typeof title !== "string" || typeof description !== "string") {
+            return res.status(400).json({ error: "Please enter valid title and description" });
+        }
+
+        if (title.trim() === "" || description.trim() === "") {
+            return res.status(400).json({ error: "Title and description are required" });
+        }
+
+        const task = await prisma.task.update({
+            where: { id: String(id) },
+            data: {
+                title,
+                description
+            }
+        });
+        res.status(200).json(task);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to update task" });
+    }
+}
