@@ -49,7 +49,7 @@ export const getTaskById = async (
     try {
         const { id } = req.params;
         const task = await prisma.task.findUnique({
-            where: { id },
+            where: { id: String(id) },
         });
         if (!task) {
             return res.status(404).json({ error: "Task not found" });
@@ -83,8 +83,30 @@ export const updateTask = async (
                 description
             }
         });
+         if (!task) {
+            return res.status(404).json({ error: "Task not found" });
+        }
         res.status(200).json(task);
     } catch (error) {
         res.status(500).json({ error: "Failed to update task" });
+    }
+}
+
+export const deleteTask = async (
+    req: Request, 
+    res: Response
+) => {
+    try {
+        const { id } = req.params;
+
+        const task = await prisma.task.delete({
+            where: { id: String(id) },
+        });
+         if (!task) {
+            return res.status(404).json({ error: "Task not found" });
+        }
+        res.status(200).json(task);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to delete task" });
     }
 }
