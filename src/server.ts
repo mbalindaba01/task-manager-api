@@ -2,8 +2,8 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import healthRoute from "./routes/healthRoute";
-import taskRoute from "./routes/taskRoute";
+import healthRoute from "./routes/healthRoute.js";
+import taskRoute from "./routes/taskRoute.js";
 
 dotenv.config();
 const app = express();

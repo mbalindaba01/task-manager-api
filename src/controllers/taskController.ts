@@ -1,10 +1,14 @@
 import { Request, Response } from "express";
+import prisma from "../config/prisma"
 
-export const getAllTasks = (req: Request, res: Response) => {
-    res.status(200).json({
-            tasks: [
-                {   id: 1, title: "Task 1", description: "Learn Express", completed: false},
-                {  id: 2, title: "Task 2", description: "Build a REST API", completed: false},
-            ]
-    });
+export const getAllTasks = async (
+    req: Request, 
+    res: Response
+) => {
+    try  {
+        const tasks = await prisma.task.findMany();
+        res.status(200).json(tasks);
+    }catch (error) {
+        res.status(500).json({ error: "Failed to fetch tasks" });
+    }
 }
