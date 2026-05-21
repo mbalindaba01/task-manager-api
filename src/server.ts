@@ -3,15 +3,18 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import healthRoute from "./routes/healthRoute";
+import taskRoute from "./routes/taskRoute";
 
 dotenv.config();
-
 const app = express();
 
+//middlewares
 app.use(cors());
 app.use(express.json());
 app.use("/health", healthRoute);
+app.use("/tasks", taskRoute);
 
+// Root route
 app.get("/", (req: Request, res: Response) => {
   res.send("Task Manager API is running");
 });
