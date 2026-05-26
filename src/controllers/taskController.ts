@@ -110,3 +110,31 @@ export const deleteTask = async (
         res.status(500).json({ error: "Failed to delete task" });
     }
 }
+
+export const searchTasks = async (
+    req: Request, 
+    res: Response
+) => {
+    try {
+        const { q } = req.query;
+        const tasks = await prisma.task.findMany({
+            where: {
+                OR: [
+                    { title: { 
+                        contains: String(q),
+                        mode: "insensitive"
+                    } 
+                },
+                    { description: { 
+                        contains: String(q),
+                        mode: "insensitive"
+                    } 
+                }
+                ]
+            }
+        });
+        res.status(200).json(tasks);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to search tasks" });
+    }
+}
