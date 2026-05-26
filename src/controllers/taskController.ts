@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma.js"
+import { validateTaskInput } from "../services/validateTask.js";
 
 
 export const getAllTasks = async (
@@ -22,14 +23,19 @@ export const createTask = async (
     try {
         const { title, description } = req.body;
 
-    if (typeof title !== "string"|| typeof description !== "string") {
-        return res.status(400).json({ error: "Please enter valid title and description"});
-    }
+        //Validation
+        const validationError = validateTaskInput(
+        title,
+        description
+        );
 
-    if (title.trim() === "" || description.trim() === "") {
-        return res.status(400).json({ error: "Title and description are required" });
-    }
+        if (!validationError.valid) {
+        return res.status(400).json({
+            error: validationError.error,
+        });
+        }
     
+        //Create Task in DB
         const task = await prisma.task.create({
             data: {
                 title,
@@ -68,14 +74,19 @@ export const updateTask = async (
         const { id } = req.params;
         const { title, description } = req.body;
 
-        if (typeof title !== "string" || typeof description !== "string") {
-            return res.status(400).json({ error: "Please enter valid title and description" });
+         //Validation
+        const validationError = validateTaskInput(
+        title,
+        description
+        );
+
+        if (!validationError.valid) {
+        return res.status(400).json({
+            error: validationError,
+        });
         }
 
-        if (title.trim() === "" || description.trim() === "") {
-            return res.status(400).json({ error: "Title and description are required" });
-        }
-
+        //Update Task in DB
         const task = await prisma.task.update({
             where: { id: String(id) },
             data: {
