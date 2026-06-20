@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 import healthRoute from "./routes/healthRoute.js";
 import taskRoute from "./routes/taskRoute.js";
+import authRoute from "./routes/authRoute.js";
 
 dotenv.config();
 const app = express();
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/health", healthRoute);
 app.use("/tasks", taskRoute);
+app.use("/auth", authRoute);
 
 // Root route
 app.get("/", (req: Request, res: Response) => {
