@@ -2,12 +2,26 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prisma from "../config/prisma.js";
 import { Request, Response } from "express";
+import { validateUserInput } from "../services/validateUser.js";
 
 
 export const register = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
 
   try {
+
+    //validation of user input
+
+    const validationError = validateUserInput(
+      username,
+      password,
+      email
+    )
+
+    if (!validationError.valid) {
+      return res.status(400).json({ message: validationError.error });
+    }
+
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email }
