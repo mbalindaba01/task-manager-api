@@ -35,7 +35,7 @@ export const createTask = async (
         });
         }
 
-        const userId = req.user?.id; // Assuming auth middleware sets req.userId
+        const userId = req.user?.id; 
 
         //Create Task in DB
         const task = await prisma.task.create({
