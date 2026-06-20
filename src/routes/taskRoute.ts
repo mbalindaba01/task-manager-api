@@ -4,9 +4,9 @@ import { authMiddleware } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
-router.get("/", getAllTasks);
+router.get("/", authMiddleware, getAllTasks);
 router.post("/", authMiddleware, createTask);
-router.get("/search", searchTasks);
+router.get("/search", authMiddleware, searchTasks);
 router.get("/:id", getTaskById);
 router.put("/:id", authMiddleware, updateTask);
 router.delete("/:id", authMiddleware, deleteTask);

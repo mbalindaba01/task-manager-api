@@ -8,7 +8,11 @@ export const getAllTasks = async (
     res: Response
 ) => {
     try  {
-        const tasks = await prisma.task.findMany();
+        const tasks = await prisma.task.findMany({
+            where: {
+                userId: req.user?.id
+            }
+        });
         res.status(200).json(tasks);
     }catch (error) {
         res.status(500).json({ error: "Failed to fetch tasks" });
@@ -58,7 +62,8 @@ export const getTaskById = async (
     try {
         const { id } = req.params;
         const task = await prisma.task.findUnique({
-            where: { id: String(id) },
+            where: { 
+                id: String(id), userId: req.user?.id }
         });
         if (!task) {
             return res.status(404).json({ error: "Task not found" });
@@ -91,7 +96,7 @@ export const updateTask = async (
 
         //Update Task in DB
         const task = await prisma.task.update({
-            where: { id: String(id) },
+            where: { id: String(id), userId: req.user?.id },
             data: {
                 title,
                 description
@@ -133,6 +138,7 @@ export const searchTasks = async (
         const { q } = req.query;
         const tasks = await prisma.task.findMany({
             where: {
+                userId: req.user?.id,
                 OR: [
                     { title: { 
                         contains: String(q),
