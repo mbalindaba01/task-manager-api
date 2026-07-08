@@ -24,11 +24,17 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+enum TaskStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
 model Task {
   id          String @id @default(uuid())
   title       String
   description String?
-  completed   Boolean @default(false)
+  status   TaskStatus @default(NOT_STARTED)
 
   userId      String
   user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
