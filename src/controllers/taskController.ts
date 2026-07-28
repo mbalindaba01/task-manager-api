@@ -165,11 +165,10 @@ export const updateTaskStatus = async (
     res: Response
 ) => {
     try {
-        const { id } = req.params;
-        const { status } = req.body;
+        const { id, status } = req.params;
         console.log("Status:", status);
         console.log("Task ID:", id);
-        if (!Object.values(TaskStatus).includes(status)) {
+        if (!Object.values(TaskStatus).includes(status as TaskStatus)) {
         return res.status(400).json({
             error: "Invalid status"
         });
@@ -179,7 +178,7 @@ export const updateTaskStatus = async (
                 id: String(id), 
                 userId: req.user?.id 
             },
-            data: { status }
+            data: { status: status as TaskStatus }
         });
 
         if (!task) {

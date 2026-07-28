@@ -10,7 +10,7 @@ router.get("/search", authMiddleware, searchTasks);
 router.get("/:id", getTaskById);
 router.put("/:id", authMiddleware, updateTask);
 router.delete("/:id", authMiddleware, deleteTask);
-router.put("/:id/status", authMiddleware, updateTaskStatus);
+router.put("/:id/:status", authMiddleware, updateTaskStatus);
 
 
 export default router;
