@@ -16,6 +16,7 @@ export const getAllTasks = async (
         });
         res.status(200).json(tasks);
     }catch (error) {
+        console.log(error)
         res.status(500).json({ error: "Failed to fetch tasks" });
     }
 }
@@ -26,12 +27,13 @@ export const createTask = async (
 ) => {
     
     try {
-        const { title, description } = req.body;
+        const { title, description, priority, dueDate } = req.body;
 
         //Validation
         const validationError = validateTaskInput(
         title,
-        description
+        description,
+        dueDate
         );
 
         if (!validationError.valid) {
@@ -41,17 +43,21 @@ export const createTask = async (
         }
 
         const userId = req.user?.id; 
+        const parsedDueDate = new Date(dueDate)
 
         //Create Task in DB
         const task = await prisma.task.create({
             data: {
                 title,
                 description,
-                userId
+                userId,
+                priority,
+                dueDate: dueDate ? parsedDueDate : null
             }
         });
         res.status(201).json(task);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Failed to create task" });
     }  
 }
@@ -81,12 +87,13 @@ export const updateTask = async (
 ) => {
     try {
         const { id } = req.params;
-        const { title, description } = req.body;
+        const { title, description, status, dueDate, priority } = req.body;
 
          //Validation
         const validationError = validateTaskInput(
         title,
-        description
+        description,
+        dueDate,
         );
 
         if (!validationError.valid) {
@@ -100,7 +107,9 @@ export const updateTask = async (
             where: { id: String(id), userId: req.user?.id },
             data: {
                 title,
-                description
+                description,
+                status,
+                priority
             }
         });
          if (!task) {

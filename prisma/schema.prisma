@@ -30,12 +30,19 @@ enum TaskStatus {
   COMPLETED
 }
 
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
 model Task {
   id          String @id @default(uuid())
   title       String
   description String?
-  status   TaskStatus @default(NOT_STARTED)
-
+  status      TaskStatus @default(NOT_STARTED)
+  priority    Priority   @default(MEDIUM)
+  dueDate     DateTime?
   userId      String
   user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
