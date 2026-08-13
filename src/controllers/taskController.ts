@@ -87,7 +87,7 @@ export const updateTask = async (
 ) => {
     try {
         const { id } = req.params;
-        const { title, description, status, dueDate, priority } = req.body;
+        const { title, description, dueDate, priority } = req.body;
 
          //Validation
         const validationError = validateTaskInput(
@@ -102,14 +102,16 @@ export const updateTask = async (
         });
         }
 
+        const parsedDueDate = dueDate ? new Date(dueDate) : null;
+
         //Update Task in DB
         const task = await prisma.task.update({
             where: { id: String(id), userId: req.user?.id },
             data: {
                 title,
                 description,
-                status,
-                priority
+                priority,
+                dueDate : parsedDueDate 
             }
         });
          if (!task) {
